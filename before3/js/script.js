@@ -62,6 +62,7 @@ $(function () { // Same as document.addEventListener("DOMContentLoaded"...
 
   //load the menu categories
   dc.loadMenuCategories = function () {
+    console.log("loadMenuCategories gestartet");
     showLoading("#main-content");
     $ajaxUtils.sendGetRequest(
       allCategoriesUrl,
