@@ -96,7 +96,7 @@ $(function () { // Same as document.addEventListener("DOMContentLoaded"...
 function buildCategoriesViewHtml(categories,
                                   categoriesTitleHtml,
                                   categoryHtml) {
-  finalHtml += "<section class='row'>"; 
+  var finalHtml = "<section class='row'>"; 
 
   //loop over categories
   for (var i = 0; i<categories.length;i++) {
