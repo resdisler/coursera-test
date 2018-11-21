@@ -28,7 +28,7 @@ $(function () { // Same as document.addEventListener("DOMContentLoaded"...
   var allMenuesUrl = "https://davids-restaurant.herokuapp.com/menu_items.json";
   var categoriesTitleHtml = "snippets/categories-title-snippet.html";
   var categoriesHtml = "snippets/category-snippet.html";
-  var menuItemTitleHtml = "snippets/menue-items-title.html";
+  var menuItemTitleHtml = "snippets/menu-items-title.html"; 
   var menuItemHtml = "snippets/menue-item.html";
 
   var insertHtml = function (selector, html) {
