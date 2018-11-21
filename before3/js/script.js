@@ -29,7 +29,7 @@ $(function () { // Same as document.addEventListener("DOMContentLoaded"...
   var categoriesTitleHtml = "snippets/categories-title-snippet.html";
   var categoriesHtml = "snippets/category-snippet.html";
   var menuItemTitleHtml = "snippets/menu-items-title.html"; 
-  var menuItemHtml = "snippets/menue-item.html";
+  var menuItemHtml = "snippets/menu-item.html";
 
   var insertHtml = function (selector, html) {
     var targetElem = document.querySelector(selector);
