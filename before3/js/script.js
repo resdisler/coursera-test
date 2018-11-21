@@ -25,8 +25,11 @@ $(function () { // Same as document.addEventListener("DOMContentLoaded"...
 
   var homeHtml = "snippets/home-snippet.html";
   var allCategoriesUrl = "https://davids-restaurant.herokuapp.com/categories.json";
+  var allMenuesUrl = "https://davids-restaurant.herokuapp.com/menu_items.json";
   var categoriesTitleHtml = "snippets/categories-title-snippet.html";
   var categoriesHtml = "snippets/category-snippet.html";
+  var menuItemTitleHtml = "snippets/menue-items-title.html";
+  var menuItemHtml = "snippets/menue-item.html";
 
   var insertHtml = function (selector, html) {
     var targetElem = document.querySelector(selector);
@@ -96,7 +99,7 @@ $(function () { // Same as document.addEventListener("DOMContentLoaded"...
 function buildCategoriesViewHtml(categories,
                                   categoriesTitleHtml,
                                   categoryHtml) {
-  var finalHtml = "<section class='row'>"; 
+  var finalHtml = categoriesTitleHtml+"<section class='row'>"; 
 
   //loop over categories
   for (var i = 0; i<categories.length;i++) {
@@ -107,6 +110,79 @@ function buildCategoriesViewHtml(categories,
     html = insertProperty(html,"name",name);
     html = insertProperty(html,"short_name",short_name);
     finalHtml += html;
+  };
+  return finalHtml;
+};
+
+  dc.loadMenuItems = function (short_name) {
+    console.log("loadMenuItems gestartet");
+    showLoading("#main-content");
+    $ajaxUtils.sendGetRequest(
+      allMenuesUrl+"?category="+short_name,
+      buildAndShowMenuesHTML);
+  };
+// builds HTML for the menues page based
+  // on the date from the server
+//    var menuItemTitleHtml = "snippets/menue-items-title.html";
+ // var menuItemHtml = "snippets/menue-item.html";
+  function buildAndShowMenuesHTML (menues) {
+    // load title snippet 
+    $ajaxUtils.sendGetRequest(
+      menuItemTitleHtml,
+      function (menueTitleHtml) {
+        // retrieve single menu snippet
+        $ajaxUtils.sendGetRequest(
+          menuItemHtml,
+          function (menuHtml) {
+            var menuesViewHtml = 
+              buildMenuesViewHtml  (menues,
+                                     menueTitleHtml,
+                                     menuHtml);
+              insertHtml("#main-content",menuesViewHtml);
+          },
+        false);
+    },
+      false);
+  };
+
+// using menu data and snippets html 
+// to build menues view html to be inserted into page
+function buildMenuesViewHtml(menues,
+                                  menueTitleHtml,
+                                  menuHtml) {
+  var finalHtml = menueTitleHtml+ "<section class='row'>"; 
+
+  //loop over menues
+  for (var i = 0; i<menues.menu_items.length;i++) {
+    //insert category values
+    //    description: "broccoli, carrots, baby corn, water chestnuts, mushrooms, and snow peas sauteed in brown sauce"
+    //id: 953
+    //large_portion_name: "large"
+    //name: "Wok's Mixed Vegetables"
+    //price_large: 11.45
+    //price_small: 9.45
+    //short_name: "VG1"
+    //small_portion_name: "pint"
+    var html = menuHtml;
+    var name = menues.menu_items[i].name;
+    var short_name = menues.menu_items[i].short_name; 
+    var catShortName = menues.menu_items[i].catShortName ;
+    var price_large = menues.menu_items[i].price_large ;
+    var price_small = menues.menu_items[i].price_small ;
+    var description = menues.menu_items[i].description;
+    var large_portion_name = menues.menu_item[i].large_portion_name;
+    var small_portion_name = menues.menu_item[i].small_portion_name;
+    html = insertProperty(html,"name",name);
+    html = insertProperty(html,"short_name",short_name);
+    html = insertProperty(html,"catShortName",catShortName);
+    html = insertProperty(html,"price_large",price_large);
+    html = insertProperty(html,"price_small",price_small);
+    html = insertProperty(html,"description",description);
+    html = insertProperty(html,"large_portion_name",large_portion_name);
+    html = insertProperty(html,"small_portion_name",small_portion_name);
+
+    finalHtml += html;
+
   };
   return finalHtml;
 };
