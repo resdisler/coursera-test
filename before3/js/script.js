@@ -66,6 +66,7 @@ $(function () { // Same as document.addEventListener("DOMContentLoaded"...
   //load the menu categories
   dc.loadMenuCategories = function () {
     console.log("loadMenuCategories gestartet");
+    switchMenuToActive();
     showLoading("#main-content");
     $ajaxUtils.sendGetRequest(
       allCategoriesUrl,
@@ -116,6 +117,7 @@ function buildCategoriesViewHtml(categories,
 
   dc.loadMenuItems = function (short_name) {
     console.log("loadMenuItems gestartet");
+    switchMenuToActive();
     showLoading("#main-content");
     $ajaxUtils.sendGetRequest(
       allMenuesUrl+"?category="+short_name,
@@ -150,6 +152,12 @@ function buildCategoriesViewHtml(categories,
 function buildMenuesViewHtml(menues,
                                   menueTitleHtml,
                                   menuHtml) {
+
+  var catShortName = menues.category.short_name ;
+  var catName = menues.category.name; 
+  var catInstr = menues.category.special_instructions;
+  menueTitleHtml = insertProperty(menueTitleHtml,"name",catName);
+  menueTitleHtml = insertProperty(menueTitleHtml,"special_instructions",catInstr);
   var finalHtml = menueTitleHtml+ "<section class='row'>"; 
 
   //loop over menues
@@ -166,26 +174,70 @@ function buildMenuesViewHtml(menues,
     var html = menuHtml;
     var name = menues.menu_items[i].name;
     var short_name = menues.menu_items[i].short_name; 
-    var catShortName = menues.menu_items[i].catShortName ;
     var price_large = menues.menu_items[i].price_large ;
     var price_small = menues.menu_items[i].price_small ;
     var description = menues.menu_items[i].description;
-    var large_portion_name = menues.menu_item[i].large_portion_name;
-    var small_portion_name = menues.menu_item[i].small_portion_name;
+    var large_portion_name = menues.menu_items[i].large_portion_name;
+                                                 large_portion_name
+    var small_portion_name = menues.menu_items[i].small_portion_name;
     html = insertProperty(html,"name",name);
     html = insertProperty(html,"short_name",short_name);
     html = insertProperty(html,"catShortName",catShortName);
-    html = insertProperty(html,"price_large",price_large);
-    html = insertProperty(html,"price_small",price_small);
+    if (!price_large) {
+        html = insertProperty(html,"price_large","");
+        html = insertProperty(html,"large_portion_name","");
+    } else {
+        price_large = "$" + price_large.toFixed(2);
+        html = insertProperty(html,"price_large",price_large);
+        if (!large_portion_name) {
+          html = insertProperty(html,"large_portion_name","");
+        } else {
+          html = insertProperty(html,"large_portion_name",large_portion_name);
+        };
+      }; 
+    if (!price_small) {
+      html = insertProperty(html,"price_small","");
+      html = insertProperty(html,"small_portion_name","");
+    } else {
+      price_small = "$" + price_small.toFixed(2);
+      html = insertProperty(html,"price_small",price_small);
+      if (!small_portion_name) {
+          html = insertProperty(html,"small_portion_name","");
+      } else {
+          html = insertProperty(html,"small_portion_name",small_portion_name);
+      };
+    }
+    
     html = insertProperty(html,"description",description);
-    html = insertProperty(html,"large_portion_name",large_portion_name);
-    html = insertProperty(html,"small_portion_name",small_portion_name);
+ 
 
+    // clearfix: after every 2nd item 
+    if (i%2 !=0) {
+      html += "<div class'clearfix visible-lg-block visible-md-block'></div>"
+    }
     finalHtml += html;
-
+    
   };
+  console.log(finalHtml);
   return finalHtml;
 };
+
+
+  var switchMenuToActive = function () {
+    console.log("menu aktiv setzen");
+    // remove 'active' from home button
+    var classes = document.querySelector("#navHomeButton").className;
+    classes = classes.replace(new RegExp("active","g"),"");
+    document.querySelector("#navHomeButton").className = classes;
+
+    // add 'active' to menu button if not already there 
+    var classes = document.querySelector("#navMenuButton").className;
+    if (classes.indexOf("active") == -1) {
+      classes += " active";
+    } 
+    document.querySelector("#navHomeButton").className = classes;
+
+  };
 
   global.$dc = dc; 
 })(window);
